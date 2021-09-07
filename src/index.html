@@ -1,0 +1,44 @@
+<partial src="header.html"></partial>
+
+
+<section class="acces-control container-fluid">
+  <div class="container">
+    <h1>Access Control Tool V1</h1>
+    <button class="btn-add">+ add person</button>
+    <form id="form" action="" id="userRow">
+      <input type="text" placeholder="Search by Name or Username" disabled>
+
+      <div class="search-user input-group flex-nowrap my-3 px-3 mr-3">
+        <span class="input-group-text" id="addon-wrapping">Users</span>
+        <input type="text" name="inputSearch" class="form-control" placeholder="Search..." aria-label="Username" aria-describedby="addon-wrapping">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Go!</button>
+      </div>
+
+      <div class="container p-0">
+        <!-- Table structure here -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class=" px-3">First Name</th>
+                    <th class=" px-3">Last Name</th>
+                    <th class=" px-3">User Name</th>
+                    <th class="text-center px-3">Action</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
+  
+  <div class="container d-flex justify-content-end">
+      <div class="pagination-wrapper" id="pagination-wrapper"></div>
+  </div>
+  
+  <div class="text-center" id="errorMessage">
+  </div>
+
+</section>
+
+<partial src="footer.html"></partial>

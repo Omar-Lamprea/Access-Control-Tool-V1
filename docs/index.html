@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"
+        />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="icon" href="./img/icon.png" />
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+        <title>Acces Control Tool V1</title>
+    </head>
+    
+    <body>
+        
+<h1></h1>
+
+        <section class="acces-control container-fluid">
+            <div class="container">
+                 <h1>Access Control Tool V1</h1>
+
+                <button class="btn-add">+ add person</button>
+                <form id="form" action="" id="userRow">
+                    <input type="text" placeholder="Search by Name or Username" disabled>
+                    <div class="search-user input-group flex-nowrap my-3 px-3 mr-3"> <span class="input-group-text" id="addon-wrapping">Users</span>
+
+                        <input
+                        type="text" name="inputSearch" class="form-control" placeholder="Search..."
+                        aria-label="Username" aria-describedby="addon-wrapping">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Go!</button>
+                    </div>
+                    <div class="container p-0">
+                        <!-- Table structure here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class=" px-3">First Name</th>
+                                    <th class=" px-3">Last Name</th>
+                                    <th class=" px-3">User Name</th>
+                                    <th class="text-center px-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+            </div>
+            </form>
+            <div class="container d-flex justify-content-end">
+                <div class="pagination-wrapper" id="pagination-wrapper"></div>
+            </div>
+            <div class="text-center" id="errorMessage"></div>
+        </section>
+        <footer class="footer container text-center">
+            <p></p>
+        </footer>
+        <script src="./js/all.js"></script>
+    </body>
+
+</html>
