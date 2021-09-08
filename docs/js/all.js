@@ -31,18 +31,19 @@ document.addEventListener('DOMContentLoaded', e =>{
       })
 
       let usersJson = await response.json()
-      let usersValues = usersJson
+      //let usersValues = usersJson
       console.log(usersJson)
+      console.log(response)
 
       if(!response.ok) throw {status: res.status, statusText:res.statusText}
 
       //call functions from root
       if(window.location.pathname === "/"){
-        dataTable(usersValues)
-        searchUsers(usersValues)
+        dataTable(usersJson)
+        searchUsers(usersJson)
       }
       //call details user funcion if url => details.html
-      window.location.pathname === "/details.html" ? openDetails(usersValues) : false
+      window.location.pathname === "/details.html" ? openDetails(usersJson) : false
 
     }catch(err){
       console.log(err)
