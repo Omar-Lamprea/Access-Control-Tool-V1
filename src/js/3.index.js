@@ -63,10 +63,9 @@ document.addEventListener('DOMContentLoaded', e =>{
       }
     }
   
-    var client = new Msal.UserAgentApplication(config)
-  
+    const client = new Msal.UserAgentApplication(config)
     
-    var options = {
+    const options = {
       scopes: ['user.read']
     }
     
