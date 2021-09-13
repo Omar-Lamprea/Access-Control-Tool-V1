@@ -1,3 +1,5 @@
+// const { config } = require("npm")
+
 document.addEventListener('DOMContentLoaded', e =>{
 
   const errorMessage = document.getElementById("errorMessage")
@@ -42,7 +44,55 @@ document.addEventListener('DOMContentLoaded', e =>{
       errorMessage.innerHTML = `Error ${err.status}: ${message}`
     }
   }
-
   getUsers()
+
+
+
+  
+  const authBtn = document.getElementById('authentication')
+  authBtn.addEventListener('click', run)
+  
+  async function run(){
+    console.log('running...')
+  
+    const config = {
+      auth:{
+        clientId: '72637f92-e33b-477d-afee-f73194a5f62e',
+        authority: 'https://login.microsoftonline.com/common/',
+        redirectUri: 'http://localhost:3000/',
+      }
+    }
+  
+    var client = new Msal.UserAgentApplication(config)
+  
+    
+    var options = {
+      scopes: ['user.read']
+    }
+    
+    let loginResponse = await client.loginPopup(options)
+    console.log('login: ', loginResponse) //login
+  
+    let tokenResponse = await client.acquireTokenSilent(options)
+    console.log('token:', tokenResponse) //token
+  
+    let payload = await fetch('https://graph.microsoft.com/v1.0/me',{
+      headers:{
+        'Authorization' : 'Bearer ' + tokenResponse.accessToken
+      }
+    })
+  
+    let json = await payload.json();
+    console.log('json:', json) //user auth
+  
+  
+  
+    
+    // client.loginPopup()
+  }
+
+
 })
+
+
 
