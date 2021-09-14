@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', e =>{
 
 
 
-  
+  //Authentication User:
   const authBtn = document.getElementById('authentication')
   authBtn.addEventListener('click', run)
   
@@ -69,13 +69,20 @@ document.addEventListener('DOMContentLoaded', e =>{
         clientId: '72637f92-e33b-477d-afee-f73194a5f62e',
         authority: 'https://login.microsoftonline.com/common/',
         redirectUri: 'http://localhost:3000/',
-      }
+      },
+      // cache:{
+      //   cacheLocation : 'localStorage' || 'sessionStorage'
+      // }
     }
   
     const client = new Msal.UserAgentApplication(config)
-    
+
     const options = {
-      scopes: ['user.read']
+      scopes: [
+        'user.read',
+        "openid",
+        "profile"
+      ]
     }
     
     let loginResponse = await client.loginPopup(options)
@@ -83,12 +90,16 @@ document.addEventListener('DOMContentLoaded', e =>{
   
     let tokenResponse = await client.acquireTokenSilent(options)
     console.log('token:', tokenResponse) //token
-  
+
+    localStorage.setItem('token', tokenResponse.accessToken)
+
     let payload = await fetch('https://graph.microsoft.com/v1.0/me',{
       headers:{
-        'Authorization' : 'Bearer ' + tokenResponse.accessToken
+        'Authorization' : 'Bearer ' + localStorage.getItem('token')
       }
     })
+
+
   
     let json = await payload.json();
     console.log('json:', json) //user auth
