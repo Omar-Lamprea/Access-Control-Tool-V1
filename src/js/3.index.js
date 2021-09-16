@@ -10,7 +10,9 @@ async function run(){
     auth:{
       clientId: '72637f92-e33b-477d-afee-f73194a5f62e',
       authority: 'https://login.microsoftonline.com/common/',
-      redirectUri: 'http://localhost:3000/',
+      redirectUri: 
+        'https://acsadminfe.azurewebsites.net/',
+        // 'http://localhost:3000/',
     },
     // cache:{
     //   cacheLocation : 'localStorage' || 'sessionStorage'
