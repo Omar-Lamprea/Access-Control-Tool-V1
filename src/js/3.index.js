@@ -36,10 +36,10 @@ function run(){
 }
 
 function showApp(){
-  getUsers()
   const table = document.getElementById('main-table')
+  getUsers()
   table.classList.remove('d-none')
-
+  
   const logOut = document.getElementById('log-out')
   logOut.addEventListener('click', e =>{
     client.logout();
@@ -51,47 +51,54 @@ function showApp(){
 }
 
 function showLogin(){
+  const loginStyles = document.querySelector('body')
   const login = document.getElementById('login-page')
+
+  loginStyles.classList.add('login-style')
   login.classList.remove('d-none')
   login.querySelector('button').addEventListener('click', signIn)
 }
 
 //Authentication User:
 async function signIn(evt){
-
   const btn = evt.target
   const loader = document.getElementById('loader-login')
 
-  btn.classList.add('d-none')
-  loader.classList.remove('d-none')
-
-
-  console.log('running...')
-
+  try{
+    btn.classList.add('d-none')
+    loader.classList.remove('d-none')
+    console.log('running...')
   
-  let loginResponse = await client.loginPopup(options)
-  console.log('login: ', loginResponse) //login
+    let loginResponse = await client.loginPopup(options)
+    console.log('login: ', loginResponse) //login
+    
+    let tokenResponse = await client.acquireTokenSilent(options)
+    console.log('token:', tokenResponse) //token
   
-
-  let tokenResponse = await client.acquireTokenSilent(options)
-  console.log('token:', tokenResponse) //token
-
-  localStorage.setItem('token', tokenResponse.accessToken)
-
-  let payload = await fetch('https://graph.microsoft.com/v1.0/me',{
-    headers:{
-      'Authorization' : 'Bearer ' + localStorage.getItem('token')
-    }
-  })
-
-  let json = await payload.json();
-  console.log('json:', json) //user auth
-  localStorage.setItem('login', json.userPrincipalName)
-
-  //call Users API:
-  // payload.status === 200 ? getUsers() : console.log('access dennied')
+    localStorage.setItem('token', tokenResponse.accessToken)
   
-  window.location.reload()
+    let payload = await fetch('https://graph.microsoft.com/v1.0/me',{
+      headers:{
+        'Authorization' : 'Bearer ' + localStorage.getItem('token')
+      }
+    })
+  
+    let json = await payload.json();
+    console.log('json:', json) //user auth
+    localStorage.setItem('login', json.userPrincipalName)
+  
+  
+    //call Users API:
+    // payload.status === 200 ? getUsers() : console.log('access dennied')
+    
+    window.location.reload()
+
+  }catch(error){
+    btn.classList.remove('d-none')
+    loader.classList.add('d-none')
+    console.error(error)
+  }
+
 }
 
 
@@ -134,10 +141,8 @@ async function getUsers() {
 
   }catch(err){
     console.log(err)
-    let message = err.statusText || 'Ocurrió un error al cargar!'
+    let message = err.status || 'An error occurred while loading!'
     errorMessage.innerHTML = `Error ${err.status}: ${message}`
-
-    // btn.classList.remove('d-none')
   }
 }
 

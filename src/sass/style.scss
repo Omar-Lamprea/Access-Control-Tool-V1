@@ -28,10 +28,16 @@ body {
 .btn-add, .btns-auth{
     border:none;
     border-radius: .6rem;
-    background-color: #56B956;
+    // background-color: #56B956; green
+    background-color: #1463b9;
     color: white;
     padding: .5rem;
     margin: .5rem 0;
+}
+.btns-auth:hover{
+    // background-color: #4da24d; green
+    background-color: #0e4888;
+    color: white;
 }
 
 form{
@@ -110,17 +116,17 @@ table{
 }
 
 .pagination-wrapper button{
-    color: #56B956;
+    color: #1463b9;
     font-weight: 500;
 }
 
 .pagination-wrapper button:hover{
-    background-color: #56B956;
+    background-color: #0e4888;
     color: white;
 }
 
 .active{
-    background-color: #56B956;
+    background-color: #1463b9;
     color: white !important;
 }
 
@@ -128,4 +134,24 @@ table{
 .table-details{
     border: 1px solid #c7c7c7;
     border-radius: 5px;
+}
+
+
+.login-style{
+    background-repeat: no-repeat;
+    background: rgb(254,254,254);
+    background: linear-gradient(270deg, #fefefe 0%, #5dc3f5  100%);
+    margin: auto;
+    height: 90vh;
+    width: 60vw;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-style-main{
+    background-color: #ffffff52;
+    // border: 1px solid #58ba5826;
+    padding: 5rem 2rem;
 }
