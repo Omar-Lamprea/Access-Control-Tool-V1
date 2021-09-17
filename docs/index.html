@@ -20,11 +20,18 @@
         
 <h1></h1>
 
-        <section class="acces-control container-fluid">
+        <section id="login-page" class="acces-control container-fluid d-none d-flex flex-column">
+             <h1>Access Control Tool V1</h1>
+            <button class="btns-auth" style="width: 10rem; margin: auto;">Sign In</button>
+        </section>
+        <section class="acces-control container-fluid d-none" id="main-table">
             <div class="container">
                  <h1>Access Control Tool V1</h1>
 
-                <button class="btn-add">+ add person</button>
+                <div class="btns-section">
+                    <button class="btn-add">+ add person</button>
+                    <button class="btns-auth" id="log-out">Log Out</button>
+                </div>
                 <form id="form" action="" id="userRow">
                     <input type="text" placeholder="Search by Name or Username" disabled>
                     <div class="search-user input-group flex-nowrap my-3 px-3 mr-3"> <span class="input-group-text" id="addon-wrapping">Users</span>
@@ -55,9 +62,7 @@
             </div>
             <div class="text-center" id="errorMessage"></div>
         </section>
-        <footer class="footer container text-center">
-            <!-- <button id="authentication">run authentication</button> -->
-        </footer>
+        <footer class="footer container text-center"></footer>
         <script src="./js/all.js"></script>
     </body>
 

@@ -21,7 +21,11 @@ body {
     text-decoration: none;
 }
 
-.btn-add{
+.btns-section{
+    display: flex;
+    justify-content: space-between;
+}
+.btn-add, .btns-auth{
     border:none;
     border-radius: .6rem;
     background-color: #56B956;
