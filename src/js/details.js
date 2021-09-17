@@ -1,5 +1,10 @@
 function openDetails(user){
 
+  if(user){
+    const loaderTable = document.getElementById('loader-table')
+    loaderTable.classList.add('d-none')
+  }
+
   const params = window.location.search;
   const urlParams = new URLSearchParams(params)
   const userParam = urlParams.get('user')

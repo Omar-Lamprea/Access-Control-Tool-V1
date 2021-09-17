@@ -22,7 +22,10 @@
 
         <section id="login-page" class="acces-control container-fluid d-none d-flex flex-column">
              <h1>Access Control Tool V1</h1>
-            <button class="btns-auth" style="width: 10rem; margin: auto;">Sign In</button>
+            <button class="btns-auth m-auto" style="width: 10rem;">Sign In</button>
+            <div id="loader-login" class="loader-table d-flex justify-content-center d-none">
+                <img src="./img/loader.gif" alt="" width="100">
+            </div>
         </section>
         <section class="acces-control container-fluid d-none" id="main-table">
             <div class="container">
@@ -61,6 +64,9 @@
                 <div class="pagination-wrapper" id="pagination-wrapper"></div>
             </div>
             <div class="text-center" id="errorMessage"></div>
+            <div id="loader-table" class="loader-table d-flex justify-content-center">
+                <img src="./img/loader.gif" alt="" width="100">
+            </div>
         </section>
         <footer class="footer container text-center"></footer>
         <script src="./js/all.js"></script>

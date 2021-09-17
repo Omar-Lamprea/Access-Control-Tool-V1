@@ -1,6 +1,9 @@
 function dataTable(json){
 
-  // console.log(json)
+  if(json){
+    const loaderTable = document.getElementById('loader-table')
+    loaderTable.classList.add('d-none')
+  }
 
   const state = {
     'querySet': json,

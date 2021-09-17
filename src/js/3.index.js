@@ -60,8 +60,10 @@ function showLogin(){
 async function signIn(evt){
 
   const btn = evt.target
+  const loader = document.getElementById('loader-login')
 
   btn.classList.add('d-none')
+  loader.classList.remove('d-none')
 
 
   console.log('running...')
@@ -117,7 +119,8 @@ async function getUsers() {
     let usersJson = await response.json()
     //let usersValues = usersJson
     console.log(usersJson)
-    console.log(response)
+    console.log(response.status)
+
 
     if(!response.ok) throw {status: response.status, statusText:response.statusText}
 

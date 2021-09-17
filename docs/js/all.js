@@ -69,8 +69,10 @@ function showLogin(){
 async function signIn(evt){
 
   const btn = evt.target
+  const loader = document.getElementById('loader-login')
 
   btn.classList.add('d-none')
+  loader.classList.remove('d-none')
 
 
   console.log('running...')
@@ -126,7 +128,8 @@ async function getUsers() {
     let usersJson = await response.json()
     //let usersValues = usersJson
     console.log(usersJson)
-    console.log(response)
+    console.log(response.status)
+
 
     if(!response.ok) throw {status: response.status, statusText:response.statusText}
 
@@ -191,6 +194,11 @@ async function fetchData(url, params){
 }
 function openDetails(user){
 
+  if(user){
+    const loaderTable = document.getElementById('loader-table')
+    loaderTable.classList.add('d-none')
+  }
+
   const params = window.location.search;
   const urlParams = new URLSearchParams(params)
   const userParam = urlParams.get('user')
@@ -234,7 +242,10 @@ function openDetails(user){
 
 function dataTable(json){
 
-  // console.log(json)
+  if(json){
+    const loaderTable = document.getElementById('loader-table')
+    loaderTable.classList.add('d-none')
+  }
 
   const state = {
     'querySet': json,
