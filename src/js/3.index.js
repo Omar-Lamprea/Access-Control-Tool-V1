@@ -42,7 +42,7 @@ function showApp(){
 
   const logOut = document.getElementById('log-out')
   logOut.addEventListener('click', e =>{
-    // client.logout();
+    client.logout();
     localStorage.clear();
     sessionStorage.clear()
     
@@ -70,7 +70,6 @@ async function signIn(evt){
   let loginResponse = await client.loginPopup(options)
   console.log('login: ', loginResponse) //login
   
-  localStorage.setItem('login', loginResponse)
 
   let tokenResponse = await client.acquireTokenSilent(options)
   console.log('token:', tokenResponse) //token
@@ -85,6 +84,7 @@ async function signIn(evt){
 
   let json = await payload.json();
   console.log('json:', json) //user auth
+  localStorage.setItem('login', json.userPrincipalName)
 
   //call Users API:
   // payload.status === 200 ? getUsers() : console.log('access dennied')
