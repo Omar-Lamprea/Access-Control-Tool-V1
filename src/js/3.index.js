@@ -120,7 +120,7 @@ async function getUsers() {
 
     //new backend API:
     let response = await fetch('https://acsadmin.azurewebsites.net/api/UserApi',{
-      "method" : "GET",
+      "method" : "GET"
     })
 
     let usersJson = await response.json()

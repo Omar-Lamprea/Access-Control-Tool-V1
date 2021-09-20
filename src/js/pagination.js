@@ -95,7 +95,9 @@ function dataTable(json){
         <td class=" p-3">${userList[i].surname}</td>
         <td class=" p-3">${userList[i].displayName}</td>
         <td class="text-center py-2">
-          <a href="./details.html?user=${userList[i].givenName}" target="_blank" rel="noopener noreferrer"><button id="${userList[i].givenName}" type="button" class="btn btn-details">Details</button></a>
+          <a href="./details.html?user=${userList[i].givenName}" target="_blank" rel="noopener noreferrer">
+            <button id="${userList[i].givenName}" type="button" class="btn btn-details">Details</button>
+          </a>
         </td>`
 
       table.append(row)
