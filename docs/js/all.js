@@ -12,6 +12,7 @@
 
 document.addEventListener('DOMContentLoaded', run)
 
+
 const config = {
   auth:{
     clientId: '72637f92-e33b-477d-afee-f73194a5f62e',
@@ -21,12 +22,15 @@ const config = {
       'http://localhost:3000/',
     postLogoutRedirectUri: 
       // 'https://acsadminfe.azurewebsites.net/',
-      'http://localhost:3000'
-  },
-  // cache: {
-  //   cacheLocation: "sessionStorage",
-  //   storeAuthStateInCookie: false
-  // }
+      'http://localhost:3000',
+    
+      
+    // "instance":' https://login.microsoftonline.com/',
+    // "domain": "ACview.azurewebsites.net",
+    // "clientId": "7ec568e5-033c-421b-b7ea-77dd87a9a511",
+    // "tenantId": "174fb423-3af6-41a6-8d0d-750f9ba0a663",
+    // "callbackPath": "/signin-oidc"
+  }
 }
 
 const options = {
@@ -48,6 +52,7 @@ function showApp(){
   const table = document.getElementById('main-table')
   getUsers()
   table.classList.remove('d-none')
+  // console.log(localStorage.getItem('login'))
   
   const logOut = document.getElementById('log-out')
   logOut.addEventListener('click', e =>{
@@ -134,8 +139,8 @@ async function getUsers() {
 
     let usersJson = await response.json()
     //let usersValues = usersJson
-    console.log(usersJson)
-    console.log(response.status)
+    // console.log(usersJson)
+    console.log('status:',response.status)
 
 
     if(!response.ok) throw {status: response.status, statusText:response.statusText}
@@ -145,8 +150,13 @@ async function getUsers() {
       dataTable(usersJson)
       searchUsers(usersJson)
     }
+
     //call details user funcion if url => details.html
-    window.location.pathname === "/details.html" ? openDetails(usersJson) : false
+    usersJson.forEach(user => {
+      // console.log(window.location.search,`?user=${user.givenName}`)
+      // console.log(`/details.html?user=${user.givenName}`)
+      window.location.search === `?user=${user.givenName}` ? openDetails(user) : false
+    });
 
   }catch(err){
     console.log(err)
@@ -198,64 +208,55 @@ async function fetchData(url, params){
   return fetch(url, params)
 }
 function openDetails(user){
+  console.log(user)
 
-  const params = window.location.search;
-  const urlParams = new URLSearchParams(params)
-  const userParam = urlParams.get('user')
+  // const params = window.location.search;
+  // const urlParams = new URLSearchParams(params)
+  // const userParam = urlParams.get('user')
   const tableBody = document.getElementById('table-body-details')
   const tableHead = document.getElementById('table-head-details')
+  const userDetails = document.getElementById('user-details')
 
   if(user){
     const loaderTable = document.getElementById('loader-table')
     loaderTable.classList.add('d-none')
   }
 
-  for (let i = 0; i < user.length; i++) {
-    if(userParam === user[i].givenName){
+  // for (let i = 0; i < user.length; i++) {}
+  //   if(userParam === user[i].givenName){}
 
-      const userName = document.getElementById('user-name')
-      userName.innerHTML = user[i].displayName
+  const userName = document.getElementById('user-name')
+  userName.innerHTML = user.displayName
 
-      const thead = `              
-        <th class=" px-3">Email</th>
-        <th class=" px-3">Admin</th>
-        <th class=" px-3">Guest</th>
-        <th class=" px-3">Owner</th>
-        <th class=" px-3">Airports</th>
-        <th class=" px-3">Action</th>`
+  const li = `
+    <li><div class=""><h5>ID: ${user.id}</h5></div></li>
+    <li><div class=""><h5>Email: ${user.mail}</h5</div></li>
+    <li><div class=""><h5>Job Title: ${user.jobTitle}</h5></div></li>
+    <li><div class=""><h5>Mobile phone number: ${user.mobilePhone}</h5></div></li>
+    <li><div class=""><h5>Oficce location: ${user.officeLocation}</h5></div></li>`
 
-      // main row
-      // const row = `
-      // <td class="py-3">${user[i].givenName}</td>
-      // <td class="py-3">${user[i].surname}</td>
-      // <td class="py-3">${user[i].displayName}</td>
-      // <td class="py-3"><input name="admin" type="checkbox"></input></td>
-      // <td class="py-3"><input name="guest" type="checkbox"></input></td>
-      // <td class="py-3"><input name="owner" type="checkbox"></input></td>
-      // <td class=""><button type="button" class="btn btn-details">Remove</button></td>`
+  const thead = `
+    <th class=" px-3">Admin</th>
+    <th class=" px-3">Guest</th>
+    <th class=" px-3">Owner</th>
+    <th class=" px-3">Action</th>`
 
-      //dev row
-      const tbody = `
-        <td class="py-3">${user[i].mail}</td>
-        <td class="py-3"><input name="admin" type="checkbox"></input></td>
-        <td class="py-3"><input name="guest" type="checkbox"></input></td>
-        <td class="py-3"><input name="owner" type="checkbox"></input></td>
-        <td class="py-3">
-          <select name="airports">
-            <option value="value1">Value 1</option>
-            <option value="value2">Value 2</option>
-            <option value="value3">Value 3</option>
-          </select>
-        </td>
-        <td class="w-25">
-          <button type="button" class="mt-1 btn btn-details">Save</button>
-          <button type="button" class="mt-1 btn btn-details">Remove</button>
-        </td>`
+  //dev row
+  const tbody = `
+    <td class="py-3"><input name="admin" type="checkbox"></input></td>
+    <td class="py-3"><input name="guest" type="checkbox"></input></td>
+    <td class="py-3"><input name="owner" type="checkbox"></input></td>
 
-      tableHead.innerHTML = thead
-      tableBody.innerHTML = tbody
-    }
-  }
+    <td style="width:30%;">
+    <button type="button" class="mt-1 btn btn-details">Add</button>
+    <button type="button" class="mt-1 btn btn-details">Save</button>
+      <button type="button" class="mt-1 btn btn-details">Remove</button>
+    </td>`
+
+  userDetails.innerHTML = li
+  // tableHead.innerHTML = thead
+  // tableBody.innerHTML = tbody
+
 
   const closeWindow = document.getElementById('close-window')
   closeWindow.addEventListener('click', e =>{

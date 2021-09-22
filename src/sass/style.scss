@@ -11,9 +11,26 @@ body {
 .footer {
     margin-top:3rem;
 }
-// .navbar {
-//     border-bottom:1px solid #eee;
-// }
+
+.login-style{
+    background-repeat: no-repeat;
+    background: rgb(254,254,254);
+    background: linear-gradient(270deg, #fefefe 0%, #5dc3f5  100%);
+    margin: auto;
+    height: 90vh;
+    width: 60vw;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-style-main{
+    background-color: #ffffff52;
+    // border: 1px solid #58ba5826;
+    padding: 5rem 2rem;
+}
+
 .acces-control h1{
     padding-bottom: .8rem;
     border-bottom: 1px solid #c7c7c7;
@@ -133,27 +150,33 @@ table{
 }
 
 
+
+
+
+
+
+
+//details
 .table-details{
     border: 1px solid #c7c7c7;
     border-radius: 5px;
 }
 
-
-.login-style{
-    background-repeat: no-repeat;
-    background: rgb(254,254,254);
-    background: linear-gradient(270deg, #fefefe 0%, #5dc3f5  100%);
-    margin: auto;
-    height: 90vh;
-    width: 60vw;
-    flex-direction: column;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.user-info h5{
+    margin: .3rem 0;
 }
 
-.login-style-main{
-    background-color: #ffffff52;
-    // border: 1px solid #58ba5826;
-    padding: 5rem 2rem;
+.user-details{
+    border-radius: .3rem;
+    border: 1px solid #c7c7c7;
+    min-height: 35vh;
+}
+
+.user-details ul{
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // min-height: 30vh;
+    margin: 0;
+    padding: 2rem;
 }

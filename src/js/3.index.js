@@ -3,6 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', run)
 
+
 const config = {
   auth:{
     clientId: '72637f92-e33b-477d-afee-f73194a5f62e',
@@ -12,12 +13,15 @@ const config = {
       'http://localhost:3000/',
     postLogoutRedirectUri: 
       // 'https://acsadminfe.azurewebsites.net/',
-      'http://localhost:3000'
-  },
-  // cache: {
-  //   cacheLocation: "sessionStorage",
-  //   storeAuthStateInCookie: false
-  // }
+      'http://localhost:3000',
+    
+      
+    // "instance":' https://login.microsoftonline.com/',
+    // "domain": "ACview.azurewebsites.net",
+    // "clientId": "7ec568e5-033c-421b-b7ea-77dd87a9a511",
+    // "tenantId": "174fb423-3af6-41a6-8d0d-750f9ba0a663",
+    // "callbackPath": "/signin-oidc"
+  }
 }
 
 const options = {
@@ -39,6 +43,7 @@ function showApp(){
   const table = document.getElementById('main-table')
   getUsers()
   table.classList.remove('d-none')
+  // console.log(localStorage.getItem('login'))
   
   const logOut = document.getElementById('log-out')
   logOut.addEventListener('click', e =>{
@@ -125,8 +130,8 @@ async function getUsers() {
 
     let usersJson = await response.json()
     //let usersValues = usersJson
-    console.log(usersJson)
-    console.log(response.status)
+    // console.log(usersJson)
+    console.log('status:',response.status)
 
 
     if(!response.ok) throw {status: response.status, statusText:response.statusText}
@@ -136,8 +141,13 @@ async function getUsers() {
       dataTable(usersJson)
       searchUsers(usersJson)
     }
+
     //call details user funcion if url => details.html
-    window.location.pathname === "/details.html" ? openDetails(usersJson) : false
+    usersJson.forEach(user => {
+      // console.log(window.location.search,`?user=${user.givenName}`)
+      // console.log(`/details.html?user=${user.givenName}`)
+      window.location.search === `?user=${user.givenName}` ? openDetails(user) : false
+    });
 
   }catch(err){
     console.log(err)
