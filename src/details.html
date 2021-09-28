@@ -1,74 +1,24 @@
 <partial src="header.html"></partial>
 
 <section class="acces-control container-fluid">
-  <div class="container">
+
+  <section class="container">
     <h1>Details</h1>
     <h3 id="user-name" class="my-3 text-center"></h3>
+    <partial src="loader.html"></partial>
 
-
-    <!-- dev table: -->
-    <section class="user-roles">
-      <!-- <h4 id="user-role" class="my-3 text-center">Roles</h4> -->
-  
-      <table class="table table-details text-center">
-        <thead>
-            <tr class="table" id="table-head-details"></tr>
-        </thead>
-        <tbody>
-          <tr class="row-table" id="table-body-details"></tr>
-        </tbody>
-      </table>
-    </section>
-  </div>
-
-    <!-- <section class="airports mt-5">
-      <h4 id="Airports" class="my-3 text-center">designated airports</h4>
-      <table class="table table-details text-center">
-        <thead>
-          <tr>
-            <th>name</th>
-            <th>city</th>
-          </tr>
-        </thead>
-        <tbody class="row-table">
-          <tr>
-            <td>airport 1</td>
-            <td>city 1</td>
-          </tr>
-          <tr>
-            <td>airport 2</td>
-            <td>city 2</td>
-          </tr>
-          <tr>
-            <td>airport 3</td>
-            <td>city 3</td>
-          </tr>
-        </tbody>
-      </table>
-    </section> -->
-  <section class="container">
     <div class="row">
+
       <div class="col-sm-8 col-md-9 mb-4">
         <div class="user-details">
           <ul id="user-details"></ul>
         </div>
       </div>
+
       <div class="col-sm-4 col-md-3 mb-4">
         <div class="user-details">
-          <!-- <h5 class="m-0 text-center">Role</h5> -->
-          <ul>
-            <li>
-              <div class="container-rols d-flex justify-content-between">
-                <h5>admin</h5>
-                <button class="btn p-0"><img src="./img/garbage-can.svg" alt="garbage" width="20"></button>
-              </div>
-            </li>
-            <li>
-              <div class="container-rols d-flex justify-content-between">
-                <h5>Guest</h5>
-                <button class="btn p-0"><img src="./img/garbage-can.svg" alt="garbage" width="20"></button>
-              </div>
-            </li>
+          <h3 class="m-2 text-center">Active Rols</h3>
+          <ul id="active-rols">
           </ul>
         </div>
       </div>
@@ -108,13 +58,7 @@
       <div class="col-sm-4 col-md-3 mb-4">
         <div class="user-details">
           <h3 class="m-2 text-center">Aviable Rols</h3>
-          <ul>
-            <li>
-              <div class="container-rols d-flex justify-content-between">
-                <h5>Owner</h5>
-                <button class="btn p-0"><img src="./img/add.svg" alt="garbage" width="20"></button>
-              </div>
-            </li>
+          <ul id="aviable-rols">
           </ul>
         </div>
       </div>
@@ -124,13 +68,11 @@
 
     <div class="container p-0 d-flex justify-content-evenly">
       <button class="btn btns-auth m-3" id="close-window">Close</button>
-      <button class="btn btns-auth m-3" id="">Edit</button>
-      <button class="btn btns-auth m-3" id="">Save All</button>
+      <button class="btn btns-auth m-3" id="edit">Edit</button>
+      <button class="btn btns-auth m-3" id=reset"">Reset</button>
+      <button class="btn btns-auth m-3" id="save">Save All</button>
     </div>
   </div>
-
-
-  <partial src="loader.html"></partial>
 
 </section>
 

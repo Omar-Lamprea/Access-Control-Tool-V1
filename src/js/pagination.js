@@ -91,14 +91,15 @@ function dataTable(json){
 
       const row = `
         <tr class="row-table">
-        <td class=" p-3">${userList[i].givenName}</td>
-        <td class=" p-3">${userList[i].surname}</td>
-        <td class=" p-3">${userList[i].displayName}</td>
-        <td class="text-center py-2">
-          <a href="./details.html?user=${userList[i].givenName}" target="_blank" rel="noopener noreferrer">
-            <button id="${userList[i].givenName}" type="button" class="btn btn-details">Details</button>
-          </a>
-        </td>`
+          <td class=" p-3">${userList[i].givenName}</td>
+          <td class=" p-3">${userList[i].surname}</td>
+          <td class=" p-3">${userList[i].displayName}</td>
+          <td class="text-center py-2">
+            <a href="./details.html?user=${userList[i].givenName}" target="_blank" rel="noopener noreferrer">
+              <button id="${userList[i].givenName}" type="button" class="btn btn-details">Details</button>
+            </a>
+          </td>
+        </tr>`
 
       table.append(row)
     }

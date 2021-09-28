@@ -139,6 +139,7 @@ async function getUsers() {
 
     let usersJson = await response.json()
     //let usersValues = usersJson
+    
     // console.log(usersJson)
     console.log('status:',response.status)
 
@@ -207,33 +208,81 @@ async function fetchData(url, params){
   }
   return fetch(url, params)
 }
-function openDetails(user){
-  console.log(user)
-
   // const params = window.location.search;
   // const urlParams = new URLSearchParams(params)
   // const userParam = urlParams.get('user')
-  const tableBody = document.getElementById('table-body-details')
-  const tableHead = document.getElementById('table-head-details')
-  const userDetails = document.getElementById('user-details')
+
+async function openDetails(user){
+  console.log(user)
 
   if(user){
     const loaderTable = document.getElementById('loader-table')
     loaderTable.classList.add('d-none')
   }
+  
+  const rolsResponse = await fetch('./locales/rols.json')
+  const rolsJson = await rolsResponse.json()
+
+  // const airportsResponse = await fetch('https://acsstandardapi.azurewebsites.net/Api/GetAirports')
+  // const airportsJson = await airportsResponse.json()
+  // console.log(airportsResponse)
+  // console.log(airportsJson)
+  
+  const userName = document.getElementById('user-name')
+  const userDetails = document.getElementById('user-details')
+  const activeRols = document.getElementById('active-rols')
+  const aviableRols = document.getElementById('aviable-rols')
+
+  userName.innerHTML = user.displayName
+
+  for (const key in user) {
+    // console.log(key, user[key])
+    const liUserDetails = `
+      <li>
+        <div class="">
+          <h5>${key}: ${user[key]}</h5>
+        </div>
+      </li>`
+
+    userDetails.innerHTML += liUserDetails
+  }
+
+  try{
+    
+    rolsJson.forEach(rol => {
+      for (let i = 0; i < rol.activeRols.length; i++) {
+        const liActiveRols = `
+          <li>
+            <div class="container-rols my-2 d-flex justify-content-between">
+              <h5 class="m-0">${rol.activeRols[i]}</h5>
+              <button id="${rol.activeRols[i]}" class="btn p-0"><img src="./img/remove.png" alt="garbage" width="20"></button>
+            </div>
+          </li>`
+        activeRols.innerHTML += liActiveRols
+      }
+
+      for (let i = 0; i < rol.aviableRols.length; i++) {
+        const liAviableRols = `
+          <li>
+            <div class="container-rols my-2 d-flex justify-content-between">
+              <h5 class="m-0">${rol.aviableRols[i]}</h5>
+              <button id="${rol.aviableRols[i]}" class="btn p-0"><img src="./img/add.svg" alt="garbage" width="20"></button>
+            </div>
+          </li>`
+        aviableRols.innerHTML += liAviableRols
+      }
+    })
+
+
+  }catch{}
+
+  const tableBody = document.getElementById('table-body-details')
+  const tableHead = document.getElementById('table-head-details')
+
 
   // for (let i = 0; i < user.length; i++) {}
   //   if(userParam === user[i].givenName){}
 
-  const userName = document.getElementById('user-name')
-  userName.innerHTML = user.displayName
-
-  const li = `
-    <li><div class=""><h5>ID: ${user.id}</h5></div></li>
-    <li><div class=""><h5>Email: ${user.mail}</h5</div></li>
-    <li><div class=""><h5>Job Title: ${user.jobTitle}</h5></div></li>
-    <li><div class=""><h5>Mobile phone number: ${user.mobilePhone}</h5></div></li>
-    <li><div class=""><h5>Oficce location: ${user.officeLocation}</h5></div></li>`
 
   const thead = `
     <th class=" px-3">Admin</th>
@@ -253,14 +302,14 @@ function openDetails(user){
       <button type="button" class="mt-1 btn btn-details">Remove</button>
     </td>`
 
-  userDetails.innerHTML = li
   // tableHead.innerHTML = thead
   // tableBody.innerHTML = tbody
 
-
-  const closeWindow = document.getElementById('close-window')
-  closeWindow.addEventListener('click', e =>{
-    window.close()
+  document.addEventListener('click', e =>{
+    const btn = e.target
+    // console.log(btn)
+    if(btn.id === "close-window")window.close()
+    if(btn.id === "reset") window.location.reload()
   })
 
   // user.forEach(el =>{
@@ -376,14 +425,15 @@ function dataTable(json){
 
       const row = `
         <tr class="row-table">
-        <td class=" p-3">${userList[i].givenName}</td>
-        <td class=" p-3">${userList[i].surname}</td>
-        <td class=" p-3">${userList[i].displayName}</td>
-        <td class="text-center py-2">
-          <a href="./details.html?user=${userList[i].givenName}" target="_blank" rel="noopener noreferrer">
-            <button id="${userList[i].givenName}" type="button" class="btn btn-details">Details</button>
-          </a>
-        </td>`
+          <td class=" p-3">${userList[i].givenName}</td>
+          <td class=" p-3">${userList[i].surname}</td>
+          <td class=" p-3">${userList[i].displayName}</td>
+          <td class="text-center py-2">
+            <a href="./details.html?user=${userList[i].givenName}" target="_blank" rel="noopener noreferrer">
+              <button id="${userList[i].givenName}" type="button" class="btn btn-details">Details</button>
+            </a>
+          </td>
+        </tr>`
 
       table.append(row)
     }

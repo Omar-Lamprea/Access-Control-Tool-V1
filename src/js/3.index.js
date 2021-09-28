@@ -130,6 +130,7 @@ async function getUsers() {
 
     let usersJson = await response.json()
     //let usersValues = usersJson
+    
     // console.log(usersJson)
     console.log('status:',response.status)
 

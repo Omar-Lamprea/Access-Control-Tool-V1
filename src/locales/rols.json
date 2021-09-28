@@ -1,0 +1,6 @@
+[
+  {
+    "activeRols": ["Admin", "Guest"],
+    "aviableRols": ["Owner"]
+  }
+]
