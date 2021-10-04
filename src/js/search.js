@@ -52,8 +52,6 @@ function searchUsers(json){
       }else{
         alert(`User not found`)
       }
-      
-
     }
   }
 

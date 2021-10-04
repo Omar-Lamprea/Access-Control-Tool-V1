@@ -1,0 +1,18 @@
+{
+  "aviableRoles": [
+    {
+      "role": "Admin",
+      "id": 1
+    },
+    {
+      "role": "Owner",
+      "id": 2
+    }
+  ],
+  "activeRoles": [
+    {
+      "role": "Guest",
+      "id": 2
+    }
+  ]
+}

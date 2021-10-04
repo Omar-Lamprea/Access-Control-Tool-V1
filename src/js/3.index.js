@@ -147,7 +147,9 @@ async function getUsers() {
     usersJson.forEach(user => {
       // console.log(window.location.search,`?user=${user.givenName}`)
       // console.log(`/details.html?user=${user.givenName}`)
-      window.location.search === `?user=${user.givenName}` ? openDetails(user) : false
+
+      if(window.location.search === `?user=${user.id}`) openDetails(user) 
+        
     });
 
   }catch(err){
