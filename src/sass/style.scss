@@ -185,11 +185,11 @@ table{
     height: 100%;
 }
 
-.user-details ul{
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // min-height: 30vh;
-    // margin: 0;
-    // padding: 1rem 2rem;
+#active-rols li, #aviable-rols li{
+    list-style: none;
+}
+
+.airports-table{
+    height: 30vh;
+    overflow-y: auto;
 }

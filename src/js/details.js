@@ -13,11 +13,7 @@ async function openDetails(user){
     loaderTable.classList.add('d-none')
   }
 
-  //request airports:
-  // const airportsResponse = await fetch('https://acsstandardapi.azurewebsites.net/Api/GetAirports')
-  // console.log(airportsResponse)
-  // const airportsJson = await airportsResponse.json()
-  // console.log(airportsJson)
+
 
   userName.innerHTML = user.displayName
 
@@ -137,7 +133,36 @@ async function openDetails(user){
     }
   }
 
+  //request airports:
+  const airportsResponse = await fetch('https://acsstandardapi.azurewebsites.net/api/Airportdetails')
+  // console.log(airportsResponse)
+  const airportsJson = await airportsResponse.json()
+  const airports = airportsJson.Data
+  const airport = airportsJson.Data[0]
+  console.log(airport)
+
+  const headTableAirport = document.getElementById('head-airports-table')
+  const rowAirport = document.getElementById('body-airports-table')
+
+  //table header
+  for (const key in airport) {
+    const headTable = `<th>${key}</th>`
+    headTableAirport.innerHTML += headTable
+  }
+
+  //table body
+  
+  airports.forEach(airportData => {
+    const row = `
+      <tr>
+        <td>${airportData.Code}</td>
+        <td>${airportData.City}</td>
+        <td>${airportData.MsftTimeZone}</td>
+        <td>${airportData.IanaTimeZone}</td>
+        <td>${airportData.CountryISO}</td>
+        <td>${airportData.Country}</td>
+      </tr>`
+
+    rowAirport.innerHTML += row
+  });
 }
-
-
-

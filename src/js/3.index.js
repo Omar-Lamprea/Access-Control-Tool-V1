@@ -4,23 +4,39 @@
 document.addEventListener('DOMContentLoaded', run)
 
 
+//azure directory
+// const tenantId = "174fb423-3af6-41a6-8d0d-750f9ba0a663"
+// const config = {
+//   auth:{
+//     "clientId": "7ec568e5-033c-421b-b7ea-77dd87a9a511",
+//     "authority": `https://login.microsoftonline.com/${tenantId}/`,
+
+//     "redirectUri": 
+//       'https://acsadminfe.azurewebsites.net/',
+//       // 'http://localhost:3000/',
+//     "postLogoutRedirectUri": 
+//       'https://acsadminfe.azurewebsites.net/',
+//       // 'http://localhost:3000/',
+
+//     "instance":' https://login.microsoftonline.com/',
+//     "domain": "ACview.azurewebsites.net",
+//     "tenantId" : "174fb423-3af6-41a6-8d0d-750f9ba0a663",
+//     "callbackPath": "/signin-oidc"
+//   }
+// }
+
+//azure test
 const config = {
   auth:{
     clientId: '72637f92-e33b-477d-afee-f73194a5f62e',
-    authority: 'https://login.microsoftonline.com/common/',
-    redirectUri: 
+    "authority": `https://login.microsoftonline.com/common/`,
+
+    "redirectUri": 
       // 'https://acsadminfe.azurewebsites.net/',
       'http://localhost:3000/',
-    postLogoutRedirectUri: 
+    "postLogoutRedirectUri": 
       // 'https://acsadminfe.azurewebsites.net/',
       'http://localhost:3000',
-    
-      
-    // "instance":' https://login.microsoftonline.com/',
-    // "domain": "ACview.azurewebsites.net",
-    // "clientId": "7ec568e5-033c-421b-b7ea-77dd87a9a511",
-    // "tenantId": "174fb423-3af6-41a6-8d0d-750f9ba0a663",
-    // "callbackPath": "/signin-oidc"
   }
 }
 
@@ -144,12 +160,10 @@ async function getUsers() {
     }
 
     //call details user funcion if url => details.html
-    usersJson.forEach(user => {
-      // console.log(window.location.search,`?user=${user.givenName}`)
-      // console.log(`/details.html?user=${user.givenName}`)
-
-      if(window.location.search === `?user=${user.id}`) openDetails(user) 
-        
+    usersJson.forEach((user) => {
+      // const btnDetails = document.getElementById(`${user.id}`).id
+      // console.log(btnDetails)
+      if(window.location.search === `?user=${user.givenName + user.surname}`) openDetails(user)
     });
 
   }catch(err){

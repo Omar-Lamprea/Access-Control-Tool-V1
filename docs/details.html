@@ -34,19 +34,16 @@
                     </div>
                     <div class="col-6 col-md-3 mb-4">
                         <div class="user-details">
-                             <h3 class="m-2 text-center">Active Rols</h3>
+                             <h3 class="m-2 text-center">Active Roles</h3>
 
                             <ul id="active-rols" class="m-0 px-lg-5 py-2"></ul>
                         </div>
                     </div>
                     <div class="col-6 col-md-3 mb-4">
                         <div class="user-details">
-                             <h3 class="m-2 text-center">Aviable Rols</h3>
+                             <h3 class="m-2 text-center">Aviable Roles</h3>
 
                             <ul id="aviable-rols" class="m-0 px-lg-5 py-2"></ul>
-                            <div class="btn-add-role text-center">
-                                <button class="btn btns-auth">Add Rol</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -59,25 +56,9 @@
                             <div class="airports-table px-2">
                                 <table class="table table-details text-center">
                                     <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>City</th>
-                                        </tr>
+                                        <tr id="head-airports-table"></tr>
                                     </thead>
-                                    <tbody class="row-table">
-                                        <tr>
-                                            <td>airport 1</td>
-                                            <td>city 1</td>
-                                        </tr>
-                                        <tr>
-                                            <td>airport 2</td>
-                                            <td>city 2</td>
-                                        </tr>
-                                        <tr>
-                                            <td>airport 3</td>
-                                            <td>city 3</td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody id="body-airports-table" class="row-table"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -86,9 +67,7 @@
             </section>
             <div class="container p-0 d-flex justify-content-evenly">
                 <button class="btn btns-auth m-3" id="close-window">Close</button>
-                <button class="btn btns-auth m-3" id="edit">Edit</button>
-                <button class="btn btns-auth m-3" id=reset "">Reset</button>
-                <button class="btn btns-auth m-3" id="save">Save All</button>
+                <!-- <button class="btn btns-auth m-3" id=reset"">Reset</button> -->
             </div>
             </div>
         </section>
