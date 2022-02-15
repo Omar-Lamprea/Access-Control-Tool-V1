@@ -1,6 +1,4 @@
 function searchUsers(json){
-
-  // console.log(json)
   
   const form = document.getElementById("form")
   const tableBody = document.getElementById("table-body")
@@ -18,9 +16,15 @@ function searchUsers(json){
 
 
 
-  function filterUsers(userSearch){
+  async function filterUsers(userSearch){
 
-    const result = json.filter(u => u.givenName === userSearch ? u : false)
+    // const letter = 'is'
+    const getUserByStartLetter = await(fetch(`${urlApi}/?search="displayName:${userSearch}"&filter=startswith(displayName,'${userSearch}')`))
+    const result = await getUserByStartLetter.json()
+
+
+    // const result = json.filter(u => u.givenName === userSearch ? u : false)
+
     // console.log("users found:", result)
 
     //search by Name:

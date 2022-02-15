@@ -1,11 +1,16 @@
 // const { config } = require("npm")
 // const authBtn = document.getElementById('authentication')
 
+//production:
+// const urlApi = 'https://acsadmin.azurewebsites.net/api/Users'
+//Test:
+const urlApi = 'https://acsadmin.azurewebsites.net/api/test_Users'
+
 document.addEventListener('DOMContentLoaded', run)
 
 
 //azure directory
-// const tenantId = "174fb423-3af6-41a6-8d0d-750f9ba0a663"
+const tenantId = "174fb423-3af6-41a6-8d0d-750f9ba0a663"
 // const config = {
 //   auth:{
 //     "clientId": "7ec568e5-033c-421b-b7ea-77dd87a9a511",
@@ -140,15 +145,13 @@ async function getUsers() {
     // })
 
     //new backend API:
-    let response = await fetch('https://acsadmin.azurewebsites.net/api/UserApi',{
-      "method" : "GET"
-    })
-
+    let response = await fetch(`${urlApi}`)
     let usersJson = await response.json()
     //let usersValues = usersJson
-    
+
     // console.log(usersJson)
     console.log('status:',response.status)
+
 
 
     if(!response.ok) throw {status: response.status, statusText:response.statusText}
@@ -158,12 +161,12 @@ async function getUsers() {
       dataTable(usersJson)
       searchUsers(usersJson)
     }
-
     //call details user funcion if url => details.html
+    if(window.location.search.includes('?user=')) openDetails()
     usersJson.forEach((user) => {
       // const btnDetails = document.getElementById(`${user.id}`).id
       // console.log(btnDetails)
-      if(window.location.search === `?user=${user.givenName + user.surname}`) openDetails(user)
+      // if(window.location.search === `?user=${user.mail}`) openDetails()
     });
 
   }catch(err){

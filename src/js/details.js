@@ -1,24 +1,32 @@
-
-async function openDetails(user){
+async function openDetails(){
+  const urlParams = new URLSearchParams(window.location.search)
+  const getUserParam = urlParams.get('user')
+  // console.log(getUserParam);
 
   const userName = document.getElementById('user-name')
   const userDetails = document.getElementById('user-details')
   const activeRols = document.getElementById('active-rols')
   const aviableRols = document.getElementById('aviable-rols')
+  let activeRoles = []
+  let aviableRoles = []
 
-  console.log(user)
+  const searchUser = await fetch(`${urlApi}/?search="mail:${getUserParam}"`)
+  const userFound = await searchUser.json()
+  const user = userFound[0]
+  // console.log(user[0]);
 
-  if(user){
+
+  if(searchUser.status === 200){
     const loaderTable = document.getElementById('loader-table')
     loaderTable.classList.add('d-none')
+    getRoles()
   }
-
-
 
   userName.innerHTML = user.displayName
 
+  
+
   for (const key in user) {
-    // console.log(key, user[key])
     const liUserDetails = `
       <li>
         <div class="">
@@ -28,100 +36,100 @@ async function openDetails(user){
     if(key === "userPrincipalName" || key === "odataId" || user[key] === null){
       continue
     }
-    // console.log(user)
     userDetails.innerHTML += liUserDetails
   }
 
-  readRoles()
+  async function getRoles(){
+    activeRoles = []
+    aviableRoles = []
+    const getUserDetails = await fetch(`${urlApi}/${user.id}`)
+    const responseUser = await getUserDetails.json()
+   
+    // const userData = responseUser.userGraph
+    const userRoles = responseUser.query
+    validateRoles(userRoles)
+  }
 
-  document.addEventListener('click', e =>{
   
-    const btn = e.target
-    if(btn.id === "close-window")window.close()
-    if(btn.id === "reset") window.location.reload()
-  
-    if(btn.className.includes('rol-aviable')){
-      // console.log("aviable:", btn, btn.dataset.id, btn.dataset.rol)
-      updateAviableRoles(btn.dataset.id, btn.dataset.rol)
-    }
-  
-    if(btn.className.includes('rol-active')){
-      // console.log("Active: ",btn, btn.dataset.id, btn.dataset.rol)
-      updateActiveRoles(btn.dataset.id, btn.dataset.rol)
-    }
 
-  })
-  
-  async function readRoles(){
-    clearRoles()
-    const rolActive = await fetch('http://localhost:5000/activeRoles')
-    const rolActiveJson = await rolActive.json()
+  function validateRoles(userRoles){
+    console.log(userRoles);
 
-    const rolAviable = await fetch('http://localhost:5000/aviableRoles')
-    const rolAviableJson = await rolAviable.json()
+    userRoles.forEach(role => {
+      if (role.isActive) {
+        activeRoles.push(role)
+      }else {
+        aviableRoles.push(role)
+      }
+    });
 
-    try{
-      rolAviableJson.forEach(rolAviable => {
-        // console.log(rolAviable)
-        const li = `
+    console.log('active:', activeRoles);
+    console.log('aviable:', aviableRoles);
+
+    activeRoles.forEach(role => {
+      const liActiveRole = `
         <li>
-          <div class="container-rols my-2 d-flex justify-content-between">
-            <h5 class="m-0">${rolAviable.role}</h5>
-            <button data-id="${rolAviable.id}" data-rol="${rolAviable.role}" class="btn p-0 rol-aviable add-role"></button>
+          <div class="d-flex mb-2 justify-content-between align-items-center">
+            <p class="fs-5 m-0">${role.roleName}</p>
+            <button data-id="${role.roleId}" data-rol="${role.roleName}" class="btn p-0 rol-active remove-role"></button>
           </div>
         </li>`
-        aviableRols.innerHTML += li
-      });
+      activeRols.innerHTML += liActiveRole
+    });
   
-      rolActiveJson.forEach(rolActive => {
-        // console.log(rolActive)
-        const li = `
+    aviableRoles.forEach(role => {
+      const liAviableRole = `
         <li>
-          <div class="container-rols my-2 d-flex justify-content-between">
-            <h5 class="m-0">${rolActive.role}</h5>
-            <button data-id="${rolActive.id}" data-rol="${rolActive.role}" class="btn p-0 rol-active remove-role"></button>
+          <div class="d-flex mb-2 justify-content-between align-items-center">
+            <p class="fs-5 m-0">${role.roleName}</p>
+            <button data-id="${role.roleId}" data-rol="${role.roleName}" class="btn p-0 rol-aviable add-role"></button>
           </div>
         </li>`
-        activeRols.innerHTML += li
-      });
-  
-    }catch(err){
-      console.log("error:", err)
+        aviableRols.innerHTML += liAviableRole
+    });
+  }
+
+
+
+  async function desactivateRole(roleId, userId){
+    console.log('des', roleId, 'userId:', userId);
+    const desactivate = await fetch(`${urlApi}/UpdateUserRole/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+        "roleId": roleId,
+        "action": "delete"
+      })
+    })
+    const content = await desactivate.json()
+    if (content.message === 'role updated successfully') {
+      clearRoles()
+      getRoles()
     }
   }
-  
-  async function updateAviableRoles (rolId, roleName){
-    const createRol = await fetch('http://localhost:5000/activeRoles',{
-      method: 'POST',
+
+  async function activateRole(roleId, userId){
+    console.log('act', roleId, 'userId:',userId);
+    const activate = await fetch(`${urlApi}/UpdateUserRole/${userId}`, {
+      method: 'PUT',
       headers: {
-        "Content-type": "application/json; charset=utf-8"
+        'Content-Type' : 'application/json'
       },
       body: JSON.stringify({
-        role: roleName
+        "roleId": roleId,
+        "action": "insert"
       })
     })
-    const deleteRole = await fetch(`http://localhost:5000/aviableRoles/${rolId}`, {
-      method : 'DELETE'
-    })
-    readRoles()
+    const content = await activate.json()
+    if (content.message === 'role updated successfully') {
+      clearRoles()
+      getRoles()
+    }
   }
-  
-  async function updateActiveRoles (rolId, roleName){
-    const createRol = await fetch('http://localhost:5000/aviableRoles',{
-      method: 'POST',
-      headers: {
-        "Content-type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        role: roleName
-      })
-    })
-    const deleteRole = await fetch(`http://localhost:5000/activeRoles/${rolId}`, {
-      method : 'DELETE'
-    })
-    readRoles()
-  }
-  
+
+
   function clearRoles(){
   
     while(aviableRols.firstChild){
@@ -133,13 +141,103 @@ async function openDetails(user){
     }
   }
 
+  document.addEventListener('click', e =>{
+  
+    const btn = e.target
+    if(btn.id === "close-window")window.close()
+
+    if(btn.className.includes('rol-aviable')){
+      // console.log("aviable:", btn, btn.dataset.id, btn.dataset.rol)
+      activateRole(btn.dataset.id, user.id)
+    }
+  
+    if(btn.className.includes('rol-active')){
+      // console.log("Active: ",btn, btn.dataset.id, btn.dataset.rol)
+      desactivateRole(btn.dataset.id, user.id)
+    }
+  })
+  
+
+  // readRoles()
+  // async function readRoles(){
+  //   clearRoles()
+  //   const rolActive = await fetch('http://localhost:5000/activeRoles')
+  //   const rolActiveJson = await rolActive.json()
+
+  //   const rolAviable = await fetch('http://localhost:5000/aviableRoles')
+  //   const rolAviableJson = await rolAviable.json()
+
+  //   try{
+  //     rolAviableJson.forEach(rolAviable => {
+  //       // console.log(rolAviable)
+  //       const li = `
+  //       <li>
+  //         <div class="container-rols my-2 d-flex justify-content-between">
+  //           <h5 class="m-0">${rolAviable.role}</h5>
+  //           <button data-id="${rolAviable.id}" data-rol="${rolAviable.role}" class="btn p-0 rol-aviable add-role"></button>
+  //         </div>
+  //       </li>`
+  //       aviableRols.innerHTML += li
+  //     });
+  
+  //     rolActiveJson.forEach(rolActive => {
+  //       // console.log(rolActive)
+  //       const li = `
+  //       <li>
+  //         <div class="container-rols my-2 d-flex justify-content-between">
+  //           <h5 class="m-0">${rolActive.role}</h5>
+  //           <button data-id="${rolActive.id}" data-rol="${rolActive.role}" class="btn p-0 rol-active remove-role"></button>
+  //         </div>
+  //       </li>`
+  //       activeRols.innerHTML += li
+  //     });
+  
+  //   }catch(err){
+  //     console.log("error:", err)
+  //   }
+  // }
+  
+  // async function updateAviableRoles (rolId, roleName){
+  //   const createRol = await fetch('http://localhost:5000/activeRoles',{
+  //     method: 'POST',
+  //     headers: {
+  //       "Content-type": "application/json; charset=utf-8"
+  //     },
+  //     body: JSON.stringify({
+  //       role: roleName
+  //     })
+  //   })
+  //   const deleteRole = await fetch(`http://localhost:5000/aviableRoles/${rolId}`, {
+  //     method : 'DELETE'
+  //   })
+  //   readRoles()
+  // }
+  
+  // async function updateActiveRoles (rolId, roleName){
+  //   const createRol = await fetch('http://localhost:5000/aviableRoles',{
+  //     method: 'POST',
+  //     headers: {
+  //       "Content-type": "application/json; charset=utf-8"
+  //     },
+  //     body: JSON.stringify({
+  //       role: roleName
+  //     })
+  //   })
+  //   const deleteRole = await fetch(`http://localhost:5000/activeRoles/${rolId}`, {
+  //     method : 'DELETE'
+  //   })
+  //   readRoles()
+  // }
+  
+  
+
   //request airports:
   const airportsResponse = await fetch('https://acsstandardapi.azurewebsites.net/api/Airportdetails')
-  // console.log(airportsResponse)
   const airportsJson = await airportsResponse.json()
+  // console.log(airportsJson)
   const airports = airportsJson.Data
   const airport = airportsJson.Data[0]
-  console.log(airport)
+  // console.log(airport)
 
   const headTableAirport = document.getElementById('head-airports-table')
   const rowAirport = document.getElementById('body-airports-table')

@@ -10,11 +10,16 @@
 // const { config } = require("npm")
 // const authBtn = document.getElementById('authentication')
 
+//production:
+// const urlApi = 'https://acsadmin.azurewebsites.net/api/Users'
+//Test:
+const urlApi = 'https://acsadmin.azurewebsites.net/api/test_Users'
+
 document.addEventListener('DOMContentLoaded', run)
 
 
 //azure directory
-// const tenantId = "174fb423-3af6-41a6-8d0d-750f9ba0a663"
+const tenantId = "174fb423-3af6-41a6-8d0d-750f9ba0a663"
 // const config = {
 //   auth:{
 //     "clientId": "7ec568e5-033c-421b-b7ea-77dd87a9a511",
@@ -149,15 +154,13 @@ async function getUsers() {
     // })
 
     //new backend API:
-    let response = await fetch('https://acsadmin.azurewebsites.net/api/UserApi',{
-      "method" : "GET"
-    })
-
+    let response = await fetch(`${urlApi}`)
     let usersJson = await response.json()
     //let usersValues = usersJson
-    
+
     // console.log(usersJson)
     console.log('status:',response.status)
+
 
 
     if(!response.ok) throw {status: response.status, statusText:response.statusText}
@@ -167,12 +170,12 @@ async function getUsers() {
       dataTable(usersJson)
       searchUsers(usersJson)
     }
-
     //call details user funcion if url => details.html
+    if(window.location.search.includes('?user=')) openDetails()
     usersJson.forEach((user) => {
       // const btnDetails = document.getElementById(`${user.id}`).id
       // console.log(btnDetails)
-      if(window.location.search === `?user=${user.givenName + user.surname}`) openDetails(user)
+      // if(window.location.search === `?user=${user.mail}`) openDetails()
     });
 
   }catch(err){
@@ -224,27 +227,35 @@ async function fetchData(url, params){
   }
   return fetch(url, params)
 }
-
-async function openDetails(user){
+async function openDetails(){
+  const urlParams = new URLSearchParams(window.location.search)
+  const getUserParam = urlParams.get('user')
+  // console.log(getUserParam);
 
   const userName = document.getElementById('user-name')
   const userDetails = document.getElementById('user-details')
   const activeRols = document.getElementById('active-rols')
   const aviableRols = document.getElementById('aviable-rols')
+  let activeRoles = []
+  let aviableRoles = []
 
-  console.log(user)
+  const searchUser = await fetch(`${urlApi}/?search="mail:${getUserParam}"`)
+  const userFound = await searchUser.json()
+  const user = userFound[0]
+  // console.log(user[0]);
 
-  if(user){
+
+  if(searchUser.status === 200){
     const loaderTable = document.getElementById('loader-table')
     loaderTable.classList.add('d-none')
+    getRoles()
   }
-
-
 
   userName.innerHTML = user.displayName
 
+  
+
   for (const key in user) {
-    // console.log(key, user[key])
     const liUserDetails = `
       <li>
         <div class="">
@@ -254,100 +265,100 @@ async function openDetails(user){
     if(key === "userPrincipalName" || key === "odataId" || user[key] === null){
       continue
     }
-    // console.log(user)
     userDetails.innerHTML += liUserDetails
   }
 
-  readRoles()
+  async function getRoles(){
+    activeRoles = []
+    aviableRoles = []
+    const getUserDetails = await fetch(`${urlApi}/${user.id}`)
+    const responseUser = await getUserDetails.json()
+   
+    // const userData = responseUser.userGraph
+    const userRoles = responseUser.query
+    validateRoles(userRoles)
+  }
 
-  document.addEventListener('click', e =>{
   
-    const btn = e.target
-    if(btn.id === "close-window")window.close()
-    if(btn.id === "reset") window.location.reload()
-  
-    if(btn.className.includes('rol-aviable')){
-      // console.log("aviable:", btn, btn.dataset.id, btn.dataset.rol)
-      updateAviableRoles(btn.dataset.id, btn.dataset.rol)
-    }
-  
-    if(btn.className.includes('rol-active')){
-      // console.log("Active: ",btn, btn.dataset.id, btn.dataset.rol)
-      updateActiveRoles(btn.dataset.id, btn.dataset.rol)
-    }
 
-  })
-  
-  async function readRoles(){
-    clearRoles()
-    const rolActive = await fetch('http://localhost:5000/activeRoles')
-    const rolActiveJson = await rolActive.json()
+  function validateRoles(userRoles){
+    console.log(userRoles);
 
-    const rolAviable = await fetch('http://localhost:5000/aviableRoles')
-    const rolAviableJson = await rolAviable.json()
+    userRoles.forEach(role => {
+      if (role.isActive) {
+        activeRoles.push(role)
+      }else {
+        aviableRoles.push(role)
+      }
+    });
 
-    try{
-      rolAviableJson.forEach(rolAviable => {
-        // console.log(rolAviable)
-        const li = `
+    console.log('active:', activeRoles);
+    console.log('aviable:', aviableRoles);
+
+    activeRoles.forEach(role => {
+      const liActiveRole = `
         <li>
-          <div class="container-rols my-2 d-flex justify-content-between">
-            <h5 class="m-0">${rolAviable.role}</h5>
-            <button data-id="${rolAviable.id}" data-rol="${rolAviable.role}" class="btn p-0 rol-aviable add-role"></button>
+          <div class="d-flex mb-2 justify-content-between align-items-center">
+            <p class="fs-5 m-0">${role.roleName}</p>
+            <button data-id="${role.roleId}" data-rol="${role.roleName}" class="btn p-0 rol-active remove-role"></button>
           </div>
         </li>`
-        aviableRols.innerHTML += li
-      });
+      activeRols.innerHTML += liActiveRole
+    });
   
-      rolActiveJson.forEach(rolActive => {
-        // console.log(rolActive)
-        const li = `
+    aviableRoles.forEach(role => {
+      const liAviableRole = `
         <li>
-          <div class="container-rols my-2 d-flex justify-content-between">
-            <h5 class="m-0">${rolActive.role}</h5>
-            <button data-id="${rolActive.id}" data-rol="${rolActive.role}" class="btn p-0 rol-active remove-role"></button>
+          <div class="d-flex mb-2 justify-content-between align-items-center">
+            <p class="fs-5 m-0">${role.roleName}</p>
+            <button data-id="${role.roleId}" data-rol="${role.roleName}" class="btn p-0 rol-aviable add-role"></button>
           </div>
         </li>`
-        activeRols.innerHTML += li
-      });
-  
-    }catch(err){
-      console.log("error:", err)
+        aviableRols.innerHTML += liAviableRole
+    });
+  }
+
+
+
+  async function desactivateRole(roleId, userId){
+    console.log('des', roleId, 'userId:', userId);
+    const desactivate = await fetch(`${urlApi}/UpdateUserRole/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+        "roleId": roleId,
+        "action": "delete"
+      })
+    })
+    const content = await desactivate.json()
+    if (content.message === 'role updated successfully') {
+      clearRoles()
+      getRoles()
     }
   }
-  
-  async function updateAviableRoles (rolId, roleName){
-    const createRol = await fetch('http://localhost:5000/activeRoles',{
-      method: 'POST',
+
+  async function activateRole(roleId, userId){
+    console.log('act', roleId, 'userId:',userId);
+    const activate = await fetch(`${urlApi}/UpdateUserRole/${userId}`, {
+      method: 'PUT',
       headers: {
-        "Content-type": "application/json; charset=utf-8"
+        'Content-Type' : 'application/json'
       },
       body: JSON.stringify({
-        role: roleName
+        "roleId": roleId,
+        "action": "insert"
       })
     })
-    const deleteRole = await fetch(`http://localhost:5000/aviableRoles/${rolId}`, {
-      method : 'DELETE'
-    })
-    readRoles()
+    const content = await activate.json()
+    if (content.message === 'role updated successfully') {
+      clearRoles()
+      getRoles()
+    }
   }
-  
-  async function updateActiveRoles (rolId, roleName){
-    const createRol = await fetch('http://localhost:5000/aviableRoles',{
-      method: 'POST',
-      headers: {
-        "Content-type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        role: roleName
-      })
-    })
-    const deleteRole = await fetch(`http://localhost:5000/activeRoles/${rolId}`, {
-      method : 'DELETE'
-    })
-    readRoles()
-  }
-  
+
+
   function clearRoles(){
   
     while(aviableRols.firstChild){
@@ -359,13 +370,103 @@ async function openDetails(user){
     }
   }
 
+  document.addEventListener('click', e =>{
+  
+    const btn = e.target
+    if(btn.id === "close-window")window.close()
+
+    if(btn.className.includes('rol-aviable')){
+      // console.log("aviable:", btn, btn.dataset.id, btn.dataset.rol)
+      activateRole(btn.dataset.id, user.id)
+    }
+  
+    if(btn.className.includes('rol-active')){
+      // console.log("Active: ",btn, btn.dataset.id, btn.dataset.rol)
+      desactivateRole(btn.dataset.id, user.id)
+    }
+  })
+  
+
+  // readRoles()
+  // async function readRoles(){
+  //   clearRoles()
+  //   const rolActive = await fetch('http://localhost:5000/activeRoles')
+  //   const rolActiveJson = await rolActive.json()
+
+  //   const rolAviable = await fetch('http://localhost:5000/aviableRoles')
+  //   const rolAviableJson = await rolAviable.json()
+
+  //   try{
+  //     rolAviableJson.forEach(rolAviable => {
+  //       // console.log(rolAviable)
+  //       const li = `
+  //       <li>
+  //         <div class="container-rols my-2 d-flex justify-content-between">
+  //           <h5 class="m-0">${rolAviable.role}</h5>
+  //           <button data-id="${rolAviable.id}" data-rol="${rolAviable.role}" class="btn p-0 rol-aviable add-role"></button>
+  //         </div>
+  //       </li>`
+  //       aviableRols.innerHTML += li
+  //     });
+  
+  //     rolActiveJson.forEach(rolActive => {
+  //       // console.log(rolActive)
+  //       const li = `
+  //       <li>
+  //         <div class="container-rols my-2 d-flex justify-content-between">
+  //           <h5 class="m-0">${rolActive.role}</h5>
+  //           <button data-id="${rolActive.id}" data-rol="${rolActive.role}" class="btn p-0 rol-active remove-role"></button>
+  //         </div>
+  //       </li>`
+  //       activeRols.innerHTML += li
+  //     });
+  
+  //   }catch(err){
+  //     console.log("error:", err)
+  //   }
+  // }
+  
+  // async function updateAviableRoles (rolId, roleName){
+  //   const createRol = await fetch('http://localhost:5000/activeRoles',{
+  //     method: 'POST',
+  //     headers: {
+  //       "Content-type": "application/json; charset=utf-8"
+  //     },
+  //     body: JSON.stringify({
+  //       role: roleName
+  //     })
+  //   })
+  //   const deleteRole = await fetch(`http://localhost:5000/aviableRoles/${rolId}`, {
+  //     method : 'DELETE'
+  //   })
+  //   readRoles()
+  // }
+  
+  // async function updateActiveRoles (rolId, roleName){
+  //   const createRol = await fetch('http://localhost:5000/aviableRoles',{
+  //     method: 'POST',
+  //     headers: {
+  //       "Content-type": "application/json; charset=utf-8"
+  //     },
+  //     body: JSON.stringify({
+  //       role: roleName
+  //     })
+  //   })
+  //   const deleteRole = await fetch(`http://localhost:5000/activeRoles/${rolId}`, {
+  //     method : 'DELETE'
+  //   })
+  //   readRoles()
+  // }
+  
+  
+
   //request airports:
   const airportsResponse = await fetch('https://acsstandardapi.azurewebsites.net/api/Airportdetails')
-  // console.log(airportsResponse)
   const airportsJson = await airportsResponse.json()
+  // console.log(airportsJson)
   const airports = airportsJson.Data
   const airport = airportsJson.Data[0]
-  console.log(airport)
+  // console.log(airport)
 
   const headTableAirport = document.getElementById('head-airports-table')
   const rowAirport = document.getElementById('body-airports-table')
@@ -477,6 +578,7 @@ function dataTable(json){
     const table = $('#table-body')
     const data = pagination(state.querySet, state.page, state.rows)
     const userList = data.querySet
+    // console.log(userList);
     
     for (let i = 0; i < userList.length; i++) {
       // console.log(userList[i].givenName)
@@ -485,11 +587,10 @@ function dataTable(json){
 
       const row = `
         <tr class="row-table">
-          <td class=" p-3">${userList[i].givenName}</td>
-          <td class=" p-3">${userList[i].surname}</td>
           <td class=" p-3">${userList[i].displayName}</td>
+          <td class=" p-3">${userList[i].mail}</td>
           <td class="text-center py-2">
-            <a href="./details.html?user=${userList[i].givenName + userList[i].surname}" target="_blank" rel="noopener noreferrer">
+            <a href="./details.html?user=${userList[i].mail}" target="_blank" rel="noopener noreferrer">
               <button id="${userList[i].id}" type="button" class="btn btn-details">Details</button>
             </a>
           </td>
@@ -522,8 +623,6 @@ function dataTable(json){
 }
 
 function searchUsers(json){
-
-  // console.log(json)
   
   const form = document.getElementById("form")
   const tableBody = document.getElementById("table-body")
@@ -541,9 +640,15 @@ function searchUsers(json){
 
 
 
-  function filterUsers(userSearch){
+  async function filterUsers(userSearch){
 
-    const result = json.filter(u => u.givenName === userSearch ? u : false)
+    // const letter = 'is'
+    const getUserByStartLetter = await(fetch(`${urlApi}/?search="displayName:${userSearch}"&filter=startswith(displayName,'${userSearch}')`))
+    const result = await getUserByStartLetter.json()
+
+
+    // const result = json.filter(u => u.givenName === userSearch ? u : false)
+
     // console.log("users found:", result)
 
     //search by Name:

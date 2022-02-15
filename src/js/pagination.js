@@ -83,6 +83,7 @@ function dataTable(json){
     const table = $('#table-body')
     const data = pagination(state.querySet, state.page, state.rows)
     const userList = data.querySet
+    // console.log(userList);
     
     for (let i = 0; i < userList.length; i++) {
       // console.log(userList[i].givenName)
@@ -91,11 +92,10 @@ function dataTable(json){
 
       const row = `
         <tr class="row-table">
-          <td class=" p-3">${userList[i].givenName}</td>
-          <td class=" p-3">${userList[i].surname}</td>
           <td class=" p-3">${userList[i].displayName}</td>
+          <td class=" p-3">${userList[i].mail}</td>
           <td class="text-center py-2">
-            <a href="./details.html?user=${userList[i].givenName + userList[i].surname}" target="_blank" rel="noopener noreferrer">
+            <a href="./details.html?user=${userList[i].mail}" target="_blank" rel="noopener noreferrer">
               <button id="${userList[i].id}" type="button" class="btn btn-details">Details</button>
             </a>
           </td>
