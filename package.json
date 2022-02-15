@@ -27,11 +27,12 @@
     "gulp-if": "^2.0.2",
     "gulp-imagemin": "^5.0.3",
     "gulp-js-import": "^1.0.6",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2"
   },
   "dependencies": {
-    "npm": "^7.20.3"
+    "npm": "^7.20.3",
+    "sass": "^1.49.7"
   }
 }
